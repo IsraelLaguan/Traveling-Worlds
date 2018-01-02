@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" content="yes">
+    <title>A-Frame AABB Collider Component - Basic</title>
+    <meta name="description" content="Basic example for AABB Collider component."/>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.js"></script>
+    <script src="https://unpkg.com/aframe-aabb-collider-component/dist/aframe-aabb-collider-component.min.js"></script>
+    <script src="DragControls.js"></script>
+
+    <script src="https://github.com/ngokevin/aframe-physics-components/blob/master/dist/aframe-physics-components.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+    
+
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.12.4/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/super-hands@2.1.0/dist/super-hands.min.js"></script>
+    
+    <script src="https://cdn.rawgit.com/gasolin/aframe-href-component/128b173f/index.js"></script>
+    <script>
+      AFRAME.registerComponent('ext_href', {
+        init: function() {
+          this.el.addEventListener('click', (e) => {
+            window.open('https://objects.glitch.me');
+          })
+        }
+      })
+
+    </script>
+    
+    <script>
+      AFRAME.registerComponent('drag-controls', {
+        schema: {objects: {type: 'string', default: 'a-entity'}},
+        init: function () {
+          var objects = [];
+          var el = this.el;
+          var els;
+          var dragControls;
+          els = el.sceneEl.querySelectorAll(this.data.objects);
+          for (i = 0; i < els.length; i++) { objects.push(els[i].object3D); }
+          el.sceneEl.addEventListener('renderstart', function () {
+            dragControls = new THREE.DragControls(objects, el.sceneEl.camera,
+                                                  el.sceneEl.renderer.domElement);
+          });
+        }
+      });
+    </script>
+  </head>
+  
+  <body>
+    <a-scene cursor="rayOrigin: mouse" physics-world="gravity: 0 -9.8 0" drag-controls="objects: a-box" environment="preset: forest; shadow: true; shadowSize: 10; lightPosition: -1 1 1">
+      <a-assets>
+      </a-assets>
+      
+      <! Using External pages>
+      
+      <a-link position="7 2 -6" href="https://building-world.glitch.me" title="Refresh" image="https://ucarecdn.com/c214a75a-cd6a-429e-a0db-f86e42f2329c/"></a-link>
+      
+      <a-entity position="-3 6 -5" link="href: https://physi-enabled.glitch.me; title: Try Physic old Sample; image: https://ucarecdn.com/c214a75a-cd6a-429e-a0db-f86e42f2329c/"></a-entity>
+
+      <a-circle position="-6 6 -5" material="shader:portal;pano:https://ucarecdn.com/6d8ded04-38d7-44b7-b18a-b8cf853c825c/" ext_href></a-circle><!https://jsfiddle.net/ttug46d8/3/>
+      
+      <! Objetos Solidos  ->
+           
+      <a-entity aabb-collider="objects: a-box" id="box1" dynamic-body position="2 3.5 -5" physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+              geometry="primitive: box" material="metalness:0.6; color: red"></a-entity>
+       
+      <a-entity id="cone1" dynamic-body position="-2 4 -5" physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+              geometry="primitive: box" material="metalness:0.6; color: blue"></a-entity>
+      
+      <! Objetos Movibles  ->
+      
+      <a-box static-body force-pushable  color="red" aabb-collider="objects: a-box" position="-2 1 -5" shadow
+        event-set__hitstart="material.opacity: 0.5; material.color: orange"
+        event-set__hitend="material.opacity: 1; material.color: red"
+        physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+      ></a-box>
+
+      <a-box dynamic-body force-pushable color="green" aabb-collider="objects: a-box" position="0 1 -5" shadow
+        event-set__hitstart="material.opacity: 0.5; material.color: orange"
+        event-set__hitend="material.opacity: 1; material.color: green"
+        physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+      ></a-box>
+
+      <a-box static-body color="blue" aabb-collider="objects: a-box" position="2 1 -5" shadow
+        event-set__hitstart="material.opacity: 0.5; material.color: orange"
+        event-set__hitend="material.opacity: 1; material.color: blue"
+        physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.2 0 0"
+      ></a-box>
+      
+      <! Elementos del ambiente  ->
+      <a-entity>
+        <a-image position="3 6 -5" src="https://ucarecdn.com/9aab227b-b9ee-4342-9255-694fe58cfd85/" width="1.6" height="0.9"></a-image>
+        <a-curvedimage src="https://ucarecdn.com/64d7aac4-2ea4-45bb-840e-5fd9eacfb9c1/" height="1.5" radius="0.57" theta-length="361"
+                           rotation="0 150 0"
+                           scale="0.8 0.8 0.8"
+                           position="0 7 -5"></a-curvedimage>
+          <a-torus-knot position="0.3 3 -5" color="blue" arc="180" p="1" q="7" radius="1" radius-tubular="0.1">
+          <a-animation easing="linear" attribute="rotation" dur="10000" to="0 360 0" repeat="indefinite"/>
+        </a-torus-knot>
+        
+        <a-dodecahedron color="#F8FFFF" width="1" height="1" depth="1"
+                   position="5 0 0"
+                   rotation="45 45 45"
+                   scale="1 1 1"
+                   >
+        <a-animation attribute="rotation" begin="click" to="0 360 0"/>
+        </a-dodecahedron>
+        
+        <a-entity static-body shadow
+              position="-5 3 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"><a-event name="mouseenter" scale="4 1 6"></a-event></a-entity>
+        <a-entity static-body shadow
+              position="-5 2 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 1 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 0 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 3 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 2 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 1 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-5 0 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 3 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 2 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 1 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 0 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 3 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 2 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 1 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="5 0 -5" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        
+        <a-entity static-body shadow
+              position="-4 3 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 2 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 1 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 0 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 3 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 2 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 1 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="-4 0 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 3 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 2 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 1 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 0 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 3 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+                  geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 2 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 1 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+        <a-entity static-body shadow
+              position="4 0 -6" physics-body="boundingBox: 1 1 1; mass: 50; velocity: 0.2 0 0"
+              geometry="primitive: box" material="src: https://ucarecdn.com/e7f77f03-fd2c-43b4-8de3-8d9073cca413/"></a-entity>
+
+
+
+      </a-entity>
+      <a-entity camera position="0 1.8 4"></a-entity>
+      <a-entity position="0 -0.00001 0" static-body
+        geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
+        material="src: #groundTexture; repeat: 10000 10000;  metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
+      
+      <script>
+            var box = document.querySelector( '#box1' );
+            var cone= document.querySelector( "#cone1" );
+            box.addEventListener( 'mouseenter', function ( )
+            {
+                box.setAttribute( 'scale',
+                {
+                    x: 4,
+                    y: 1,
+                    z: 6
+                } );
+            } );
+          box.addEventListener( 'mouseleave', function ( )
+            {
+                box.setAttribute( 'scale',
+                {
+                    x: 1,
+                    y: 1,
+                    z: 1
+                } );
+            } );
+        cone.addEventListener( 'mouseenter', function ( )
+            {
+                cone.setAttribute( 'scale',
+                {
+                    x: 1,
+                    y: 3,
+                    z: 3
+                } );
+           
+            } );
+         cone.addEventListener( 'mouseleave', function ( )
+            {
+                cone.setAttribute( 'scale',
+                {
+                    x: 1,
+                    y: 1,
+                    z: 1
+                } );
+            } );
+        cone.addEventListener( 'touchstart', function ( )
+            {
+                cone.setAttribute( 'scale',
+                {
+                    x: 2,
+                    y: 2,
+                    z: 2
+                } );
+            } );
+        </script>
+    </a-scene>
+
+    <!--githubcorner-->
+    <a href="https://github.com/IsraelLaguan" class="github-corner">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill: #111; color: #EFEFEF; position: fixed; bottom: 0; border: 0; left: 0; transform: rotate(180deg); opacity: 0.8">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+      </svg>
+    </a>
+    <style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+    </style>
+    <!--endgithubcorner-->
+  </body>
+</html>
